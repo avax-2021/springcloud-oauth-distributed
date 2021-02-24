@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: zuul
+    
+server:
+  port: 8888
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka1:2001/eureka/
+
+zuul:
+  routes:
+    user-consumer: /user-consumer/**  
+    
+  retryable: true
+  
+  
+  
+ribbon:
+  ConnectTimeout: 1000
+  ReadTimeout: 1000
+  MaxAutoRetriesNextServer: 1
+  MaxAutoRetries: 1

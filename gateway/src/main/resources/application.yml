@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#          lowerCaseServiceId: true
+      routes:
+        - id: e-invoice
+          uri: lb://e-invoice
+          predicates:
+          - Path=/e-invoice/**
+          filters:
+            - StripPrefix=1
+#            - name: Hystrix
+#              args:
+#               name: fallbackcmd
+#               fallbackUri: forward:/incaseoffailureusethis
+              #重试
+            - name: Retry
+              args:
+              #重试次数，默认值是3次
+               retries: 2
+              ##状态码配置，和series不同的是这边是具体状态码的配置，取值请参考：org.springframework.http.HttpStatus
+               statuses:
+                -BAD_GATEWAY
+              #状态码配置（分段），符合的某段状态码才会进行重试逻辑，默认值是SERVER_ERROR，值是5，也就是5XX(5开头的状态码)，共有5个值：
+               series:
+                  -SERVER_ERROR
+                  #定哪些方法的请求需要进行重试逻辑，默认值是GET方法，取值如下：
+               methods:
+                 -GET
+#               exceptions:
+#                -java.io.IOException
+        - id: pc-web
+          uri: lb://pc-web
+          predicates:
+            - Path=/pc-web/**
+          filters:
+            - StripPrefix=1
+        - id: E-A02
+          uri: lb://E-A02
+          predicates:
+            - Path=/E-A02/**
+          filters:
+            - StripPrefix=1
+
+
+
+    #跨越配置
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "*"
+#               exposedHeaders:
+#                - content-type
+#              allowedHeaders:
+#                - content-type
+#              allowCredentials: true
+#                allowedMethods:
+#                  - GET
+#                  - OPTIONS
+#                  - PUT
+#                  - DELETE
+#                  - POST
+
+eureka:
+#  instance:
+#    prefer-ip-address: true
+#    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      #defaultZone: http://localhost:20001/eureka/,http://localhost:20002/eureka/
+      defaultZone: http://localhost:20002/eureka/
+#      defaultZone: http://192.168.0.127:20001/eureka/
+
+
+
+ribbon:
+  ConnectTimeout: 1000
+  ReadTimeout: 1000
+  MaxAutoRetriesNextServer: 1
+  MaxAutoRetries: 1
+server:
+  port: 80
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: hystrix.stream

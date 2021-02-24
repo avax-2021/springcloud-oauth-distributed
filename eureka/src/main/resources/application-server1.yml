@@ -1,0 +1,16 @@
+server:  
+  port: 20002
+eureka:  
+  instance:
+  #这个必须有，否则网关会错误
+    prefer-ip-address: true
+    hostname: localhost
+  client:  
+    #表示是否注册自身到eureka服务器  
+    #register-with-eureka: true  
+    #是否从eureka上获取注册信息  
+    fetch-registry: false  
+    service-url:  
+      #defaultZone: http://server2:20002/eureka/ 
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#      defaultZone: http://192.168.0.127:${server.port}/eureka/

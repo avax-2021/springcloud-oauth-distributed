@@ -1,0 +1,13 @@
+echo "# springcloud-oauth-distributed" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:avax-2021/springcloud-oauth-distributed.git
+git push -u origin main
+
+
+
+git remote add origin git@github.com:avax-2021/springcloud-oauth-distributed.git
+git branch -M main
+git push -u origin main
